@@ -1,8 +1,6 @@
 (function () {
         var app = angular.module("BookingApp");
 
-        app.value("campusbookKey", "DBi9MNAuErUoyW6sGEst");
-
         app.value("merchants", [
             {
                 "id": 24,
@@ -31,14 +29,13 @@
             },
     ]);
 
-        app.factory("campusbookService", ["$http", "campusbookKey",
-        function ($http, campusbookKey) {
-                var url = "http://api2.campusbooks.com/12/rest/prices";
+        app.factory("campusbookService", ["$http",
+        function ($http) {
+                var url = "booksList.php";
                 return {
                     searchBookPrices: function (isbn, callback) {
                         return $http.post(url, {
                             params: {
-                                key: campusbookKey,
                                 isbn: isbn,
                             },
 
