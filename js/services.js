@@ -34,17 +34,9 @@
                 var url = "booksList.php";
                 return {
                     searchBookPrices: function (isbn, callback) {
-                        return $http.post(url, {
+                        return $http.get(url, {
                             params: {
                                 isbn: isbn,
-                            },
-
-                            transformResponse: function (data) {
-                                // convert the data to JSON and provide
-                                // it to the success function below
-                                var x2js = new X2JS();
-                                var json = x2js.xml_str2json(data);
-                                return json;
                             }
                         }).then(function (data) {
                         console.log(data);
