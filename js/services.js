@@ -8,13 +8,13 @@
                 "use": true
             },
             {
-                "id": 323,
-                "name": "Alibris",
+                "id": 23,
+                "name": "Alibris.com",
                 "use": true
             },
             {
                 "id": 2022,
-                "name": "eCampus AbeBooks",
+                "name": "AbeBooks.com",
                 "use": true
             },
             {
@@ -27,20 +27,19 @@
                 "name": "Barnes & Noble Marketplace",
                 "use": true
             },
-    ]);
+        ]);
 
         app.factory("campusbookService", ["$http",
         function ($http) {
-                var url = "booksList.php";
+                var url = "getBooksList.php";
                 return {
                     searchBookPrices: function (isbn, callback) {
                         return $http.get(url, {
                             params: {
                                 isbn: isbn,
                             }
-                        }).then(function (data) {
-                        console.log(data);
-                        callback(data);
+                        }).then(function (resp) {
+                        callback(resp.data);
                     });
 
                 }

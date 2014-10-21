@@ -1,0 +1,45 @@
+        body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+        .well {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            text-align: center;
+        }
+        #price-checkbox {
+            margin-bottom: 10px;
+        }
+        #book-label-wrapper {
+            text-align: center;
+        }
+        #book-label-print-wrapper {
+            background-color: #FFF;
+            border: 2px solid black;
+            margin: 10px auto;
+            height: 124px;
+            width: 220px;
+        } 
+        #book-label {
+            background-color: #FFF;
+            height: 120px;
+            padding: 10px 0;
+            text-align: center;
+            margin: 0 auto;
+            width: 216px;
+        }
+        #book-label p {
+            margin: 0;
+            font-size: 12px;
+        }
+        .isbn-number {
+            margin: 0 auto;
+        }

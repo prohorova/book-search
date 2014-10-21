@@ -7,18 +7,24 @@ $response = simplexml_load_file($url);
 $out = array();
 switch((string) $response['status']) {
 	case "ok": 
-		$out["status"] = "ok";
+		$out["success"] = true;
 		foreach($response->page->offers->condition as $condition) {
 			if ($condition['name'] == "Used") {
+                $out["offers"] = array();
 				foreach($condition->offer as $offer) {
-					echo $key;
-					echo $offer->isbn13;
+					$offerArray = array();
+                    $offerArray['isbn13'] = (string)$offer->isbn13;
+                    $offerArray['isbn10'] = (string)$offer->isbn10;
+                    $offerArray['merchant_id'] = (string)$offer->merchant_id;
+                    $offerArray['merchant_name'] = (string)$offer->merchant_name;
+                    $offerArray['price'] = (float)$offer->price;
+                    array_push($out["offers"], $offerArray);
 				}
 			}
 		}
 		break;
 	case "error":
-		$out["status"] = "error";
+		$out["success"] = false;
 		$out["errors"] = array();
 		foreach($response->errors->error as $error) {
 			array_push($out["errors"], (string)$error);
@@ -26,6 +32,4 @@ switch((string) $response['status']) {
 		break;	
 }
 echo json_encode($out);
-
-
 ?>
