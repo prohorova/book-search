@@ -2,19 +2,19 @@
 DEFINE('CAMPUSBOOK_KEY','DBi9MNAuErUoyW6sGEst');
 
 $isbn = $_GET['isbn'];
-$url = "http://api2.campusbooks.com/12/rest/prices?key=" . CAMPUSBOOK_KEY . "&isbn=" . $isbn;
+$url = "http://api2.campusbooks.com/12/rest/bookprices?key=" . CAMPUSBOOK_KEY . "&isbn=" . $isbn;
 $response = simplexml_load_file($url);
 $out = array();
 switch((string) $response['status']) {
 	case "ok": 
 		$out["success"] = true;
+        $out["isbn13"] = (string) $response->page->book->isbn13;
+        $out["title"] = (string) $response->page->book->title;
 		foreach($response->page->offers->condition as $condition) {
 			if ($condition['name'] == "Used") {
                 $out["offers"] = array();
 				foreach($condition->offer as $offer) {
 					$offerArray = array();
-                    $offerArray['isbn13'] = (string)$offer->isbn13;
-                    $offerArray['isbn10'] = (string)$offer->isbn10;
                     $offerArray['merchant_id'] = (string)$offer->merchant_id;
                     $offerArray['merchant_name'] = (string)$offer->merchant_name;
                     $offerArray['price'] = (float)$offer->price;

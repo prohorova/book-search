@@ -45,4 +45,10 @@
                 }
             }
         }]);
+    
+    app.factory("loggingService", ["$http", function($http) {
+        return {
+            
+        }    
+    }]);
 })()

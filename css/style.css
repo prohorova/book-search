@@ -27,7 +27,7 @@
             margin: 10px auto;
             height: 124px;
             width: 220px;
-        } 
+        }
         #book-label {
             background-color: #FFF;
             height: 120px;
@@ -40,6 +40,40 @@
             margin: 0;
             font-size: 12px;
         }
+        .book-title {
+            width: 214px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .isbn-number {
             margin: 0 auto;
+        }
+        /* for printing */
+        @media screen {
+            #printSection {
+                display: none;
+            }
+        }
+        @media print {
+            @page {
+                size: auto;
+                /* auto is the initial value */
+                margin: 0mm;
+                /* this affects the margin in the printer settings */
+            }
+            body * {
+                display: none;
+            }
+            #printSection,
+            #printSection * {
+                display: block !important;
+            }
+            #printSection {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                padding: 0;
+            }
         }

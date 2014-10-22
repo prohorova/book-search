@@ -1,17 +1,19 @@
 (function () {
     var app = angular.module("BookingApp");
 
-    app.controller("MainController", ["$scope", "merchants", "campusbookService", "$filter",
+    app.controller("MainController", ["$scope", "merchants", "campusbookService", "$filter", "$rootScope",
 
-        function ($scope, merchants, campusbookService, $filter) {
+        function ($scope, merchants, campusbookService, $filter, $rootScope) {
                                       
             $scope.model = {
                 isbn: undefined,  
                 isbn13: undefined,
+                title: undefined,
                 minimalPriceToPrint: 5,
                 enteredPrice: undefined,
                 automaticPrint: false,
                 requestProcessing: false,
+                maxPrice: 0,
                 offers: [],
                 errors: []
             };
@@ -41,15 +43,30 @@
                 var merchant, i, l;
                 
                 $scope.model.requestProcessing = false;
+                $rootScope.$broadcast("searchFinished");
                 if (data.success) {
+                    if (data.isbn13 && data.title) {
+                        $scope.model.isbn13 = data.isbn13;
+                        $scope.model.title = data.title;    
+                    }
+                    else {
+                        $scope.model.errors.push("Couldn't retrieve book information");  
+                        return;
+                    }
                     if (data.offers.length) {
-                        $scope.model.isbn13 = data.offers[0].isbn13;
-                        angular.forEach(data.offers, function(offer) {
+                        _.forEach(data.offers, function(offer) {
                             merchant = findMerchant(offer["merchant_id"]);
                             if (merchant && merchant.use) {
-                                $scope.model.offers.push(offer);            
+                                $scope.model.offers.push(offer);   
                             }
-                        });    
+                        });   
+                        if (!$scope.model.offers.length) {
+                            $scope.model.errors.push("No results found"); 
+                            return;
+                        }
+                        $scope.model.maxPrice = _.max($scope.model.offers, function(offer){ return offer.price }).price; 
+                    } else {
+                        $scope.model.errors.push("No results found");     
                     }
                 } else {
                     if (data.errors.length) {
@@ -61,7 +78,7 @@
             };
     
             $scope.setMinimalPrice = function (price) {
-                $scope.model.minimalPrice = price;
+                $scope.model.minimalPriceToPrint = price;
             };
 
             $scope.searchBooks = function (isbn) {
@@ -81,27 +98,12 @@
                 return !!$scope.model.offers.length;
             };
             
-            $scope.getMaxPrice = function() {
-                return _.max($scope.model.offers, function(offer){ return offer.price }).price;
-            };
-            
             $scope.getFormattedIsbn = function() {
                 return $filter("isbn")($scope.model.isbn13);   
             };
             
-            $scope.printLabel = function() {
-                  var printContents = document.getElementById("book-label-print-wrapper").innerHTML;
-                  var originalContents = document.body.innerHTML;        
-                  var popupWin = window.open('', '_blank', 'width=216,height=120');
-                  popupWin.document.open();
-                  popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="css/style.css" /></head><body onload="window.print()">' + printContents + '</html>');
-                  popupWin.document.close();
-                  window.onafterprint = function () {
-                      alert("printed");
-                      console.log("printed");
-                // clean the print section before adding new content
-                    popupWin.close();
-                }
+            $scope.printOnStart = function() {
+                return ($scope.model.maxPrice >= $scope.model.minimalPriceToPrint) && $scope.model.automaticPrint;    
             };
     }]);
 })()
