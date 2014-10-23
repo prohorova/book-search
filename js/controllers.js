@@ -114,19 +114,32 @@
         
         $scope.logsModel = {
             logs: [],
+            total: 0,
             moreLogsAvailable: false,
             requestProcessing: false
         };
         
+        var checkIfMoreLogsAvailable = function() {
+            $scope.logsModel.moreLogsAvailable = $scope.logsModel.logs.length < $scope.logsModel.total;        
+        };
+        
         var processLogsListResponse = function(data) {
-            $scope.logsModel.requestProcessing = false,
-            $scope.logsModel.logs = $scope.logsModel.logs.concat(data.logs);
+            $scope.logsModel.requestProcessing = false
+            if (data.logs) {
+                $scope.logsModel.logs = $scope.logsModel.logs.concat(data.logs);    
+            }
             offset = $scope.logsModel.logs.length;
-            $scope.logsModel.moreLogsAvailable = $scope.logsModel.logs.length < data.total;
+            $scope.logsModel.total = data.total;
+            checkIfMoreLogsAvailable();
         }
         
-        var processLogEntryCreationResponse = function() {
-            
+        var processLogEntryCreationResponse = function(data) {
+            if (data.newFile) {
+                $scope.logsModel.logs.pop();
+                $scope.logsModel.logs.unshift(data.newFile); 
+                $scope.logsModel.total++;
+                checkIfMoreLogsAvailable();
+            }
         }
         
         loggingService.getLogs(offset, count, processLogsListResponse); 

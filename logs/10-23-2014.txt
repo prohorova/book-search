@@ -1,7 +1,15 @@
-Isbn: 9780199535569
+ISBN: 9780199535569
 Title: Pride and Prejudice (Oxford World's Classics)
-was printed: 
-Isbn: 9780199535569
+AbeBooks.com: 1
+Half.com: 0.75
+Amazon Mkt: 0.53
+Alibris.com: 0.99
+Barnes & Noble Marketplace: 1.99
+Printed: no
+
+ISBN: 9780199535569
 Title: Pride and Prejudice (Oxford World's Classics)
-Printed: false
+Alibris.com: 0.99
+Barnes & Noble Marketplace: 1.99
+Printed: no
 

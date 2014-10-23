@@ -101,7 +101,7 @@
                         <p ng-if="noLogs()">No logs exist yet</p>
                         <ul class="list-unstyled">
                             <li ng-repeat="log in logsModel.logs">
-                                <a href="logs/{{log}}" target="_blank">{{log}}</a>
+                                <a href="logs/{{log}}" target="_blank" download>{{log}}</a>
                             </li>
                         </ul>
                         <div class="logs-button-wrapper">
