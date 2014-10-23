@@ -32,22 +32,22 @@
     <div class="container" ng-controller="MainController" ng-cloak>
         <h1>Arnold isbns</h1>
         <div class="well">
-            <form class="form-inline" name="search" data-ng-submit="searchBooks(model.isbn)">
-                <div ng-repeat="error in model.errors">
+            <form class="form-inline" name="search" data-ng-submit="searchBooks(mainModel.isbn)">
+                <div ng-repeat="error in mainModel.errors">
                     <div class="alert alert-danger">{{error}}</div>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="isbn" class="form-control" placeholder="Enter ISBN number" data-ng-model="model.isbn" dir-focus/>
+                    <input type="text" name="isbn" class="form-control" placeholder="Enter ISBN number" data-ng-model="mainModel.isbn" ng-disabled="mainModel.requestProcessing" dir-focus/>
                 </div>
-                <button class="btn btn-primary" type="submit">Search</button>
-                <img src="images/ajax_loader.GIF" ng-show="model.requestProcessing"/>
+                <button class="btn btn-primary" type="submit" ng-disabled="mainModel.requestProcessing">Search</button>
+                <img src="images/ajax_loader.GIF" ng-show="mainModel.requestProcessing"/>
             </form>
         </div>
         <div>
             <div ng-if="showResults()">
                 <h2>Results</h2>
                 <div class="well">
-                    <div ng-repeat="offer in model.offers">
+                    <div ng-repeat="offer in mainModel.offers">
                         <div class="row">
                             <div class="col-md-8">
                                 {{offer.merchant_name}}:
@@ -60,10 +60,10 @@
                     <div id="book-label-wrapper">
                         <div id="book-label-print-wrapper">
                             <div id="book-label">
-                                <p class="book-title"><strong>{{model.title}}</strong></p>
+                                <p class="book-title"><strong>{{mainModel.title}}</strong></p>
                                 <p>ISBN {{getFormattedIsbn()}}</p>
-                                <div class="isbn-number" dir-barcode isbn-number={{model.isbn13}}></div>
-                                <p><strong>{{model.maxPrice | currency}}</strong></p>
+                                <div class="isbn-number" dir-barcode isbn-number={{mainModel.isbn13}}></div>
+                                <p><strong>{{mainModel.maxPrice | currency}}</strong></p>
                             </div>
                         </div>
                         <button class="btn btn-primary" dir-print print-element-id="book-label" print-on-start={{printOnStart()}}>print label</button>
@@ -76,13 +76,13 @@
                     <form class="form-inline" name="settings" novalidate>
                         <div id="price-checkbox" class="checkbox">
                             <label>
-                                <input type="checkbox" data-ng-model="model.automaticPrint" />automatically print label if price is above {{model.minimalPriceToPrint | currency}}
+                                <input type="checkbox" data-ng-model="mainModel.automaticPrint" />automatically print label if price is above {{mainModel.minimalPriceToPrint | currency}}
                             </label>
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control" placeholder="select minimum price" data-ng-model="model.enteredPrice" />
-                            <button class="btn btn-primary" data-ng-click="setMinimalPrice(model.enteredPrice)">set price</button>
+                            <input class="form-control" placeholder="select minimum price" data-ng-model="mainModel.enteredPrice" />
+                            <button class="btn btn-primary" data-ng-click="setMinimalPrice(mainModel.enteredPrice)">set price</button>
                         </div>
                     </form>
 
@@ -96,15 +96,18 @@
                         </div>
                     </form>
 
-                    <h4>Download daily logs</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="">log 1</a>
-                        </li>
-                        <li><a href="">log 2</a>
-                        </li>
-                        <li><a href="">log 3</a>
-                        </li>
-                    </ul>
+                    <div ng-controller="logsController">
+                        <h4>Download daily logs</h4>
+                        <p ng-if="noLogs()">No logs exist yet</p>
+                        <ul class="list-unstyled">
+                            <li ng-repeat="log in logsModel.logs">
+                                <a href="logs/{{log}}" target="_blank">{{log}}</a>
+                            </li>
+                        </ul>
+                        <div class="logs-button-wrapper">
+                            <button  type="text" class="btn btn-primary" ng-show="logsModel.moreLogsAvailable" ng-click="getMoreLogs()" ng-disabled="logsModel.requestProcessing">get more logs</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

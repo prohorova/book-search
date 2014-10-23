@@ -1,5 +1,7 @@
 (function () {
         var app = angular.module("BookingApp");
+        app.value("logsOnPage", 2);
+        app.value("logsDir", "logs/");
 
         app.value("merchants", [
             {
@@ -39,16 +41,40 @@
                                 isbn: isbn,
                             }
                         }).then(function (resp) {
-                        callback(resp.data);
-                    });
+                            callback(resp.data);
+                        });
 
+                    }
                 }
-            }
         }]);
-    
-    app.factory("loggingService", ["$http", function($http) {
-        return {
-            
-        }    
-    }]);
-})()
+
+        app.factory("loggingService", ["$http", "logsDir",
+                function ($http, logsDir) {
+                    var getLogsUrl = "getLogs.php",
+                        createLogEntryUrl = "createLogEntry.php";
+                    return {
+                        getLogs: function (offset, count, callback) {
+                            $http.get(getLogsUrl, {
+                                params: {
+                                    offset: offset,
+                                    count: count,
+                                    logsDir: logsDir
+                                }
+                            }).then(function (resp) {
+                                callback(resp.data);
+                            })
+                        },
+                        createLogEntry: function (isbn, title, offers, isPrinted, callback) {
+                            $http.post(createLogEntryUrl, {
+                                isbn: isbn,
+                                title: title,
+                                offers: offers,
+                                isPrinted: isPrinted.toString(),
+                                logsDir: logsDir
+                            }).then(function (resp) {
+                                callback(resp.data);
+                            });
+                        }
+                    }
+                }]);
+        })()

@@ -49,6 +49,9 @@
         .isbn-number {
             margin: 0 auto;
         }
+.logs-button-wrapper {
+    text-align: center;
+}
         /* for printing */
         @media screen {
             #printSection {
