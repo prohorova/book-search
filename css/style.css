@@ -40,18 +40,12 @@
             margin: 0;
             font-size: 12px;
         }
-        .book-title {
-            width: 214px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         .isbn-number {
             margin: 0 auto;
         }
-.logs-button-wrapper {
-    text-align: center;
-}
+        .logs-button-wrapper {
+            text-align: center;
+        }
         /* for printing */
         @media screen {
             #printSection {

@@ -60,7 +60,7 @@
                     <div id="book-label-wrapper">
                         <div id="book-label-print-wrapper">
                             <div id="book-label">
-                                <p class="book-title"><strong>{{mainModel.title}}</strong></p>
+                                <p class="book-title"><strong>{{mainModel.title | bookTitle}}</strong></p>
                                 <p>ISBN {{getFormattedIsbn()}}</p>
                                 <div class="isbn-number" dir-barcode isbn-number={{mainModel.isbn13}}></div>
                                 <p><strong>{{mainModel.maxPrice | currency}}</strong></p>

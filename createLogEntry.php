@@ -9,19 +9,24 @@ $offers = $obj["offers"];
 $isPrinted = $obj["isPrinted"];
 $dir = $obj['logsDir'];
 
-$filename = date("n-j-Y").'.txt';
+$filename = date("n-j-Y").'.csv';
 $file = $dir . $filename;
 $out = array();
 
 if (!file_exists($file)) {
     $out["newFile"] = $filename;
 }
-$logPrices = "";
-foreach($offers as $offer) {
-    $logPrices .= $offer['merchant_name'] . ": " . $offer['price'] . "\r\n";
+$logPrices = "\"";
+foreach($offers as $key => $offer) {
+    $logPrices .= $offer['merchant_name'] . ":" . $offer['price'];
+    if ($key < count($offers) -1) {
+         $logPrices .= ",";
+    } else {
+        $logPrices .= "\"";
+    }
 }
-$logPrinted = "Printed: " . ($isPrinted == "true" ? "yes" : "no");
-$logEntry = "ISBN: " . $isbn . "\r\n" . "Title: " . $title . "\r\n" . $logPrices . $logPrinted . "\r\n\r\n";
+$logPrinted = $isPrinted == "true" ? "yes" : "no";
+$logEntry = $isbn . "," . $title . "," . $logPrices . "," . $logPrinted . "\r\n";
 file_put_contents($file, $logEntry, FILE_APPEND);
 
 echo json_encode($out);
