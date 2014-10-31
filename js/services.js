@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module("BookingApp");
     app.value("logsOnPage", 5);
-    app.value("logsDir", "logs/");
+    app.value("logsDir", "logs");
 
     app.value("merchants", [
         {

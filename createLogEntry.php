@@ -10,8 +10,12 @@ $isPrinted = $obj["isPrinted"];
 $dir = $obj['logsDir'];
 
 $filename = date("n-j-Y").'.csv';
-$file = $dir . $filename;
+$file = $dir . "/" . $filename;
 $out = array();
+
+if (!file_exists($dir)) {
+	mkdir($dir, 0777);
+}
 
 if (!file_exists($file)) {
     $out["newFile"] = $filename;
