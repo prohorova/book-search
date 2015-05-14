@@ -11,7 +11,7 @@ $out["logs"] = array();
 if ($handle = opendir($dir)) {
     while (false !== ($entry = readdir($handle))) {
         if ($entry !== "." && $entry !== "..") {
-            $logFilesList[$entry] = filectime($dir . $entry);
+            $logFilesList[$entry] = filectime($dir . "/" . $entry);
         }
     }
     arsort($logFilesList);

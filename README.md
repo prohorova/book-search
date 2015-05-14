@@ -1,0 +1,2 @@
+<h1>Book search application</h1>
+This small application allows to search books by its isbn number using campusbooks api and generate and print barcode labels (EAN-13 format) based on search results. Search results are stored in downloadable log files.

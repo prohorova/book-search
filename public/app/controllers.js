@@ -1,7 +1,7 @@
 (function () {
-    var app = angular.module("BookingApp");
+    angular.module("BookingApp")
 
-    app.controller("MainController", ["$scope", "merchants", "campusbookService", "$filter", "$rootScope",
+    .controller("MainController", ["$scope", "merchants", "campusbookService", "$filter", "$rootScope",
 
         function ($scope, merchants, campusbookService, $filter, $rootScope) {
 
@@ -20,15 +20,33 @@
 
             $scope.merchants = merchants;
 
-            var resetErrors = function () {
+            $scope.searchBooks = searchBooks;
+
+            $scope.setMinimalPrice = setMinimalPrice;
+
+            $scope.showResults = showResults;
+
+            $scope.getFormattedIsbn = getFormattedIsbn;
+
+            $scope.printOnStart = printOnStart;
+
+            function getFormattedIsbn() {
+                return $filter("isbn")($scope.mainModel.isbn13);
+            }
+
+            function resetErrors() {
                 $scope.mainModel.errors = [];
-            };
+            }
 
-            var resetOffers = function () {
+            function resetOffers() {
                 $scope.mainModel.offers = [];
-            };
+            }
 
-            var processResponse = function (data) {
+            function printOnStart() {
+                return ($scope.mainModel.maxPrice >= $scope.mainModel.minimalPriceToPrint) && $scope.mainModel.automaticPrint;
+            }
+
+            function processResponse(data) {
                 var merchant, i, l;
 
                 $scope.mainModel.requestProcessing = false;
@@ -65,15 +83,10 @@
                         $scope.mainModel.errors.push("Unknown error occured");
                     }
                 };
-            };
+            }
 
-            $scope.setMinimalPrice = function (price) {
-                $scope.mainModel.minimalPriceToPrint = price;
-            };
-
-            $scope.searchBooks = function (isbn) {
+            function searchBooks(isbn) {
                 var INTEGER_REGEXP = /^\-?\d+$/;
-
                 resetErrors();
                 if (isbn && INTEGER_REGEXP.test(isbn) && (isbn.length === 10 || isbn.length === 13)) {
                     resetOffers();
@@ -82,22 +95,18 @@
                 } else {
                     $scope.mainModel.errors.push("Isbn must contain 10 or 13 digits");
                 };
-            };
+            }
 
-            $scope.showResults = function () {
+            function setMinimalPrice(price) {
+                $scope.mainModel.minimalPriceToPrint = price;
+            }
+
+            function showResults() {
                 return !!$scope.mainModel.offers.length;
-            };
+            }
+    }])
 
-            $scope.getFormattedIsbn = function () {
-                return $filter("isbn")($scope.mainModel.isbn13);
-            };
-
-            $scope.printOnStart = function () {
-                return ($scope.mainModel.maxPrice >= $scope.mainModel.minimalPriceToPrint) && $scope.mainModel.automaticPrint;
-            };
-    }]);
-
-    app.controller("logsController", ["$scope", "loggingService", "logsOnPage",
+    .controller("logsController", ["$scope", "loggingService", "logsOnPage",
         function ($scope, loggingService, logsOnPage) {
             var offset = 0,
                 count = logsOnPage;
@@ -109,11 +118,34 @@
                 requestProcessing: false
             };
 
-            var checkIfMoreLogsAvailable = function () {
+            $scope.getMoreLogs = getMoreLogs;
+
+            $scope.noLogs = noLogs;
+
+            activate();
+
+            function activate() {
+                loggingService.getLogs(offset, count, processLogsListResponse);
+
+                $scope.$on("searchFinished", function (event, isbn, title, offers, isPrintedOnStart) {
+                    loggingService.createLogEntry(isbn, title, offers, isPrintedOnStart, processLogEntryCreationResponse);
+                });
+            }
+
+            function checkIfMoreLogsAvailable() {
                 $scope.logsModel.moreLogsAvailable = $scope.logsModel.logs.length < $scope.logsModel.total;
+            }
+
+            function getMoreLogs() {
+                $scope.logsModel.requestProcessing = true,
+                loggingService.getLogs(offset, count, processLogsListResponse);
             };
 
-            var processLogsListResponse = function (data) {
+            function noLogs() {
+                return !($scope.logsModel.logs && $scope.logsModel.logs.length);
+            }
+
+            function processLogsListResponse(data) {
                 $scope.logsModel.requestProcessing = false
                 if (data.logs) {
                     $scope.logsModel.logs = $scope.logsModel.logs.concat(data.logs);
@@ -121,30 +153,15 @@
                 offset = $scope.logsModel.logs.length;
                 $scope.logsModel.total = data.total;
                 checkIfMoreLogsAvailable();
-            };
+            }
 
-            var processLogEntryCreationResponse = function (data) {
+            function processLogEntryCreationResponse(data) {
                 if (data.newFile) {
                     $scope.logsModel.logs.pop();
                     $scope.logsModel.logs.unshift(data.newFile);
                     $scope.logsModel.total++;
                     checkIfMoreLogsAvailable();
                 }
-            };
-
-            loggingService.getLogs(offset, count, processLogsListResponse);
-
-            $scope.getMoreLogs = function () {
-                $scope.logsModel.requestProcessing = true,
-                loggingService.getLogs(offset, count, processLogsListResponse);
-            };
-
-            $scope.noLogs = function () {
-                return !($scope.logsModel.logs && $scope.logsModel.logs.length);
-            };
-
-            $scope.$on("searchFinished", function (event, isbn, title, offers, isPrintedOnStart) {
-                loggingService.createLogEntry(isbn, title, offers, isPrintedOnStart, processLogEntryCreationResponse);
-            });
+            }
     }]);
 })();
